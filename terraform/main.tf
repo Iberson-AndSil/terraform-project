@@ -194,8 +194,8 @@
 
 terraform {
   backend "s3" {
-    bucket = "pavan-your-terraform-state-bucket"
-    key    = "ecs/hello-world-app/terraform.tfstate"
+    bucket = "bucket-node"
+    key    = "/terraform.tfstate"
     region = "us-east-2"
   }
 }
