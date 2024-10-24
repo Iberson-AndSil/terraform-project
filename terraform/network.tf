@@ -46,57 +46,57 @@
 #   }
 # }
 
-resource "aws_security_group" "app_sg" {
-  name        = "${var.app_name}-sg"
-  description = "Allow HTTP and internal traffic"
-  vpc_id      = var.vpc_id
+# resource "aws_security_group" "app_sg" {
+#   name        = "${var.app_name}-sg"
+#   description = "Allow HTTP and internal traffic"
+#   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso desde cualquier IP
-  }
+#   ingress {
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso desde cualquier IP
+#   }
 
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso desde cualquier IP (puedes ajustar esto si deseas más restricciones)
-  }
+#   ingress {
+#     from_port   = 3000
+#     to_port     = 3000
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso desde cualquier IP (puedes ajustar esto si deseas más restricciones)
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"  # Permitir todo el tráfico de salida
-    cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso a cualquier IP
-  }
-}
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"  # Permitir todo el tráfico de salida
+#     cidr_blocks = ["0.0.0.0/0"]  # Permitir acceso a cualquier IP
+#   }
+# }
 
-resource "aws_lb" "app_lb_network" {
-  name               = "${var.app_name}-lb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.app_sg.id]  # Usar el grupo de seguridad definido
-  subnets            = var.subnet_ids
-}
+# resource "aws_lb" "app_lb_network" {
+#   name               = "${var.app_name}-lb"
+#   internal           = false
+#   load_balancer_type = "application"
+#   security_groups    = [aws_security_group.app_sg.id]  # Usar el grupo de seguridad definido
+#   subnets            = var.subnet_ids
+# }
 
-resource "aws_ecs_service" "service_network" {
-  name            = var.app_name
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.task.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+# resource "aws_ecs_service" "service_network" {
+#   name            = var.app_name
+#   cluster         = aws_ecs_cluster.cluster.id
+#   task_definition = aws_ecs_task_definition.task.arn
+#   desired_count   = 1
+#   launch_type     = "FARGATE"
 
-  network_configuration {
-    subnets         = var.subnet_ids
-    assign_public_ip = true
-    security_groups = [aws_security_group.app_sg.id]  # Usar el grupo de seguridad definido
-  }
+#   network_configuration {
+#     subnets         = var.subnet_ids
+#     assign_public_ip = true
+#     security_groups = [aws_security_group.app_sg.id]  # Usar el grupo de seguridad definido
+#   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.app_target_group.arn
-    container_name   = var.app_name
-    container_port   = 3000
-  }
-}
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.app_target_group.arn
+#     container_name   = var.app_name
+#     container_port   = 3000
+#   }
+# }
