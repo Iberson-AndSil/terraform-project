@@ -14,39 +14,57 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log("Connected to MongoDB Atlas"))
   .catch(err => console.error("Error connecting to MongoDB:", err));
 
-const taskSchema = new mongoose.Schema({
-  name: String,
-  description: String
+const diaSchema = new mongoose.Schema({
+  nombre: String,
+  disponible: Boolean
 });
 
-const Task = mongoose.model('Task', taskSchema);
+const Dia = mongoose.model('Dia', diaSchema);
 
-app.get('/tasks', async (req, res) => {
+const inicializarDias = async () => {
+  const diasExistentes = await Dia.countDocuments();
+  if (diasExistentes === 0) {
+    const diasSemana = [
+      { nombre: "Lunes", disponible: false },
+      { nombre: "Martes", disponible: false },
+      { nombre: "Miércoles", disponible: false },
+      { nombre: "Jueves", disponible: false },
+      { nombre: "Viernes", disponible: false },
+      { nombre: "Sábado", disponible: false },
+      { nombre: "Domingo", disponible: false }
+    ];
+    await Dia.insertMany(diasSemana);
+    console.log("Días de la semana inicializados en la base de datos.");
+  }
+};
+inicializarDias();
+
+app.get('/dias', async (req, res) => {
   try {
-    const tasks = await Task.find();
-    res.json(tasks);
+    const dias = await Dia.find();
+    res.json(dias);
   } catch (err) {
-    res.status(500).send('Server Error');
+    res.status(500).send('Error del servidor');
   }
 });
 
-
-app.post('/tasks', async (req, res) => {
-  const { name, description } = req.body;
+app.put('/dias/:nombre', async (req, res) => {
+  const { nombre } = req.params;
+  const { disponible } = req.body;
 
   try {
-    const newTask = new Task({
-      name,
-      description
-    });
-    await newTask.save();
-    res.json(newTask);
+    const dia = await Dia.findOneAndUpdate({ nombre }, { disponible }, { new: true });
+    if (dia) {
+      res.json(dia);
+    } else {
+      res.status(404).json({ message: "Día no encontrado" });
+    }
   } catch (err) {
-    res.status(500).send('Server Error');
+    res.status(500).send('Error del servidor');
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Servidor en funcionamiento en el puerto ${PORT}`);
 });
