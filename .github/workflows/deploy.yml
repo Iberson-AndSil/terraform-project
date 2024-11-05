@@ -122,7 +122,7 @@ name: Destroy Infrastructure
 on:
   push:
     branches:
-      - destroy
+      - main
 
 jobs:
   destroy:
@@ -145,4 +145,3 @@ jobs:
         working-directory: ./terraform
 
 
-        
