@@ -61,16 +61,3 @@ Este flujo de trabajo opcional, actualmente comentado, permite destruir la infra
 2. **Destrucción de Recursos con Terraform**: Ejecuta `terraform destroy -auto-approve` para eliminar todos los recursos creados.
 
 Para activar este flujo de trabajo, descomenta el código de la sección `Terraform Destroy` y realiza un push en la rama principal.
-
-## Estructura del Proyecto
-
-```plaintext
-.
-├── .github
-│   └── workflows
-│       └── deploy.yml       # Configuración del flujo de trabajo de despliegue
-├── terraform                # Archivos de configuración de Terraform para la infraestructura
-├── docs
-│   └── arquitectura.png     # Imagen de la arquitectura del proyecto
-├── Dockerfile               # Archivo Docker para la construcción de la imagen
-└── README.md                # Documentación del proyecto
