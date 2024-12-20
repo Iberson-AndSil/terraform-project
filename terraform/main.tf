@@ -238,12 +238,12 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = jsonencode([
     {
       name          = var.app_name
-      image         = "864899858564.dkr.ecr.us-east-2.amazonaws.com/tf-node:latest"
+      image         = "864899858564.dkr.ecr.us-east-2.amazonaws.com/backend:latest"
       essential     = true
       portMappings  = [
         {
-          containerPort = 3000
-          hostPort      = 3000
+          containerPort = 3001
+          hostPort      = 3001
         }
       ]
     }
@@ -266,7 +266,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.app_target_group.arn
     container_name   = var.app_name
-    container_port   = 3000
+    container_port   = 3001
   }
 }
 
@@ -280,7 +280,7 @@ resource "aws_lb" "app_lb" {
 
 resource "aws_lb_target_group" "app_target_group" {
   name        = "${var.app_name}-tg"
-  port        = 3000
+  port        = 3001
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
@@ -288,7 +288,7 @@ resource "aws_lb_target_group" "app_target_group" {
 
 resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.app_lb.arn
-  port              = "80"
+  port              = "3001"
   protocol          = "HTTP"
 
   default_action {
